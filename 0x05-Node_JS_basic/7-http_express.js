@@ -1,59 +1,55 @@
-const express = require("express");
-const fs = require("fs").promises;
+const express = require('express');
+const fs = require('fs').promises;
 
 const app = express();
 
 function countStudents(path) {
   return new Promise((resolve, reject) => {
-    fs.readFile(path, "utf8")
+    fs.readFile(path, 'utf8')
       .then((data) => {
-        const lns = data.split("\n");
-        const hashT = {};
-        let allStudents = -1;
-        let res = "";
-        for (const l of lns) {
-          if (l.trim() !== "") {
-            const cols = l.split(",");
-            const fld = cols[3];
-            const firstName = cols[0];
-            if (allStudents >= 0) {
-              if (!Object.hasOwnProperty.call(hashT, fld)) {
-                hashT[fld] = [];
+        const lines = data.split('\n');
+        const hashtable = {};
+        let students = -1;
+        let result = '';
+        for (const line of lines) {
+          if (line.trim() !== '') {
+            const columns = line.split(',');
+            const field = columns[3];
+            const firstname = columns[0];
+            if (students >= 0) {
+              if (!Object.hasOwnProperty.call(hashtable, field)) {
+                hashtable[field] = [];
               }
-              hashT[fld] = [...hashT[fld], firstName];
+              hashtable[field] = [...hashtable[field], firstname];
             }
-            allStudents += 1;
+            students += 1;
           }
         }
-        res += `Number of students: ${allStudents}\n`;
-        for (const key in hashT) {
-          if (Object.hasOwnProperty.call(hashT, key)) {
-            res += `Number of students in ${key}: ${
-              hashT[key].length
-            }. List: ${hashT[key].join(", ")}\n`;
+        result += `Number of students: ${students}\n`;
+        for (const key in hashtable) {
+          if (Object.hasOwnProperty.call(hashtable, key)) {
+            result += `Number of students in ${key}: ${hashtable[key].length}. List: ${hashtable[key].join(', ')}\n`;
           }
         }
-        resolve(res);
+        resolve(result);
       })
       .catch(() => {
-        reject(new Error("Cannot load the database"));
+        reject(new Error('Cannot load the database'));
       });
   });
 }
 
-app.get("/", (req, res) => {
-  res.send("Hello Holberton School!");
+app.get('/', (req, res) => {
+  res.send('Hello Holberton School!');
 });
 
-app.get("/students", (req, res) => {
+app.get('/students', (req, res) => {
   countStudents(process.argv[2])
     .then((data) => {
       res.send(`This is the list of our students\n${data}`);
     })
     .catch((error) => {
-      res
-        .status(500)
-        .send(`This is the list of our students\n${error.message}`);
+      res.status(500).send(`This is the list of our students\n${error.message}`);
     });
 });
 
