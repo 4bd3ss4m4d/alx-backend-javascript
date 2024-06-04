@@ -1,36 +1,32 @@
-const fs = require("fs");
+const fs = require('fs');
 
 function countStudents(path) {
   if (!fs.existsSync(path)) {
-    throw new Error("Cannot load the database");
+    throw new Error('Cannot load the database');
   }
 
-  const readData = fs.readFileSync(path, "utf8");
-  const lns = readData.split("\n");
-  const hashT = {};
-  let allStudents = -1;
-  for (const ln of lns) {
-    if (ln.trim() !== "") {
-      const col = ln.split(",");
-      const fld = col[3];
-      const firstName = col[0];
-      if (allStudents >= 0) {
-        if (!Object.hasOwnProperty.call(hashT, fld)) {
-          hashT[fld] = [];
+  const data = fs.readFileSync(path, 'utf8');
+  const lines = data.split('\n');
+  const hashtable = {};
+  let students = -1;
+  for (const line of lines) {
+    if (line.trim() !== '') {
+      const columns = line.split(',');
+      const field = columns[3];
+      const firstname = columns[0];
+      if (students >= 0) {
+        if (!Object.hasOwnProperty.call(hashtable, field)) {
+          hashtable[field] = [];
         }
-        hashT[fld] = [...hashT[fld], firstName];
+        hashtable[field] = [...hashtable[field], firstname];
       }
-      allStudents += 1;
+      students += 1;
     }
   }
-  console.log(`Number of students: ${allStudents}`);
-  for (const key in hashT) {
-    if (Object.hasOwnProperty.call(hashT, key)) {
-      console.log(
-        `Number of students in ${key}: ${hashT[key].length}. List: ${hashT[
-          key
-        ].join(", ")}`
-      );
+  console.log(`Number of students: ${students}`);
+  for (const key in hashtable) {
+    if (Object.hasOwnProperty.call(hashtable, key)) {
+      console.log(`Number of students in ${key}: ${hashtable[key].length}. List: ${hashtable[key].join(', ')}`);
     }
   }
 }
