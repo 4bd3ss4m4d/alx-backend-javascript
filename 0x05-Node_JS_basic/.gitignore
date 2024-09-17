@@ -34,6 +34,7 @@ coverage/
 
 # Ignore all number-main.js files (e.g., 1-main.js, 2-main.js, etc.)
 [0-9]*-main.js
+[0-9]*-main_[0-9]*.js
 
 # Ignore package-lock.json (optional, depends on team preferences)
 package-lock.json
